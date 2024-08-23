@@ -1,5 +1,8 @@
 from .usuario import Usuario
 
-class Condomico(Usuario):
+class Condomino(Usuario):
+    login: str
+    senha: int
     bloco: str
-    ap: int
+    ap: str
+
