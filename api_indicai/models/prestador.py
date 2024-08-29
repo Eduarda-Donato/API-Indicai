@@ -1,10 +1,10 @@
 from .usuario import Usuario
 from ..enums.servico import Servico
 from pydantic import Field
-from sqlalchemy import Column, String
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, Enum, Integer
 
+Base = declarative_base()
 
 class Prestador(Usuario):
     tipoServico: Servico = Field(default=None)
-    
-    tipoServico = Column(String, nullable=True)
