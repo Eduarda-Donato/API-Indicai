@@ -41,7 +41,6 @@ class UsuarioManager:
             usuario.nome = usuario_atualizado.nome
             usuario.cpf = usuario_atualizado.cpf
             usuario.telefone = usuario_atualizado.telefone
-
             if isinstance(usuario, Condomino) and isinstance(usuario_atualizado, Condomino):
                 usuario.login = usuario_atualizado.login
                 usuario.senha = usuario_atualizado.senha

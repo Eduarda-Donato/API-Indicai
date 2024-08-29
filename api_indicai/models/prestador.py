@@ -1,6 +1,5 @@
-from .usuario import Usuario
+from .condomino import Condomino
 from enums.servico import Servico
 
-
-class Prestador(Usuario):
+class Prestador(Condomino):
     tipoServico: Servico
