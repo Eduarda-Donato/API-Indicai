@@ -3,7 +3,7 @@ from utils.criptografarSenha import CriptografarSenha
 
 class Condomino(Usuario):
     login: str
-    senha: int
+    senha: str
     bloco: str
     ap: str
 
