@@ -1,27 +1,44 @@
-from typing import Union, List, Type
-from models.condomino import Condomino
-from models.prestador import Prestador
-from enums.servico import Servico
-from services.usuarioManager import UsuarioManager
+from fastapi import APIRouter, HTTPException, Depends
+from typing import List, Optional
+from sqlalchemy.orm import Session
+from ..models.usuario import Usuario
+from ..services.usuarioService import UsuarioService
+from ..strategies.dbStorageStrategy import DBStorageStrategy
+
+router = APIRouter()
 
 class UsuarioController:
-    def __init__(self, manager: UsuarioManager):
-        self.manager = manager
+    def __init__(self, service: UsuarioService):
+        self.service = service
 
-    def create_usuario(self, usuario: Union[Condomino, Prestador]):
-        self.manager.create_usuario(usuario)
+    @router.post("/usuarios/", response_model=Usuario)
+    def create_usuario(self, usuario: Usuario):
+        return self.service.create_usuario(usuario)
+    
+    @router.get("/usuarios/{usuario_id}", response_model=Usuario)
+    def get_usuario(self, usuario_id: int):
+        usuario = self.service.get_usuario_por_id(usuario_id)
+        if usuario is None:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+        return usuario
+    
+    @router.get("/usuarios/")
+    def read_usuarios(self, tipo: Optional[str] = None, tipo_servico: Optional[str] = None):
+        if tipo:
+            return self.service.get_usuario_por_tipo(tipo)
+        if tipo_servico:
+            return self.service.get_prestador_por_servico(tipo_servico)
+        return self.service.storage_strategy.load_all()
 
-    def get_usuario_por_id(self, id: int) -> Union[Condomino, Prestador, None]:
-        return self.manager.get_usuario_por_id(id)
+    @router.put("/usuarios/{usuario_id}", response_model=Usuario)
+    def update_usuario(self, usuario_id: int, usuario: Usuario):
+        updated_usuario = self.service.update_usuario(usuario_id, usuario)
+        if updated_usuario is None:
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+        return updated_usuario
 
-    def get_usuario_por_tipo(self, tipo: Type[Union[Condomino, Prestador]]) -> List[Union[Condomino, Prestador]]:
-        return self.manager.get_usuario_por_tipo(tipo)
-
-    def get_prestador_por_servico(self, servico: Servico) -> List[Prestador]:
-        return self.manager.get_prestador_por_servico(servico)
-
-    def update_usuario(self, id: int, usuario_atualizado: Union[Condomino, Prestador]) -> bool:
-        return self.manager.update_usuario(id, usuario_atualizado)
-
-    def delete_usuario_por_id(self, id: int) -> bool:
-        return self.manager.delete_usuario_id(id)
+    @router.delete("/usuarios/{usuario_id}", response_model=dict)
+    def delete_usuario(self, usuario_id: int):
+        if self.service.delete_usuario_id(usuario_id):
+            return {"status": "Usuário deletado com sucesso"}
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
