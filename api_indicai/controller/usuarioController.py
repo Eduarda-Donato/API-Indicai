@@ -17,8 +17,9 @@ class UsuarioController:
                 print(erro)
             return False
 
-        usuario.senha = CriptografarSenha.criptografar(usuario.senha)
+        usuario.senha = CriptografarSenha.hash_senha(usuario.senha)
         self.manager.create_usuario(usuario)
+        return True
 
     def get_usuario_por_id(self, id: int) -> Union[Condomino, Prestador, None]:
         return self.manager.get_usuario_por_id(id)
@@ -37,11 +38,9 @@ class UsuarioController:
             return False
         
         if usuario_atualizado.senha:
-            usuario_atualizado.senha = CriptografarSenha.criptografar(usuario_atualizado.senha)
+            usuario_atualizado.senha = CriptografarSenha.hash_senha(usuario_atualizado.senha)  # Corrigido para usar hash_senha
 
         return self.manager.update_usuario(id, usuario_atualizado)
         
-
-
     def delete_usuario_por_id(self, id: int) -> bool:
         return self.manager.delete_usuario_id(id)
