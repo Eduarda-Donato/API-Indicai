@@ -8,7 +8,6 @@ def main():
     manager = UsuarioManager()
     controller = UsuarioController(manager)
     
-    # Crie exemplos de Condomino e Prestador
     condomino_valido = Condomino(
         id=1, nome="Ana", cpf="12345678900", telefone="999999999", login="ana_login", senha="Senha@123", bloco="A", ap="101"
     )
