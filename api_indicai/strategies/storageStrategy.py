@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from typing import List, Optional
-from ..models.usuario import Usuario
+from api_indicai.models.usuario import Usuario
 
 class StorageStrategy(ABC):
     @abstractmethod

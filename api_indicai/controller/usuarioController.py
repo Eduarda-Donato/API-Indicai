@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 from typing import List, Optional
 from sqlalchemy.orm import Session
-from ..models.usuario import Usuario
-from ..services.usuarioService import UsuarioService
-from ..strategies.dbStorageStrategy import DBStorageStrategy
+from api_indicai.models.usuario import Usuario
+from api_indicai.services.usuarioService import UsuarioService
+from api_indicai.strategies.dbStorageStrategy import DBStorageStrategy
 
 router = APIRouter()
 

@@ -1,7 +1,7 @@
 import logging
 from typing import List, Optional, Union
-from ..strategies.storageStrategy import StorageStrategy
-from ..models.usuario import Usuario
+from api_indicai.strategies.storageStrategy import StorageStrategy
+from api_indicai.models.usuario import Usuario
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -31,3 +31,4 @@ class UsuarioService:
 
     def delete_usuario_id(self, usuario_id: int) -> bool:
         return self.storage_strategy.delete(usuario_id)
+    
