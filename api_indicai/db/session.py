@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
-from api_indicai.services.usuarioService import UsuarioService
-from api_indicai.strategies.dbStorageStrategy import DBStorageStrategy
+from sqlalchemy.orm import declarative_base
+
+
+Base = declarative_base()
 
 class AppConfig:
     def __init__(self, database_url: str):
@@ -18,13 +20,6 @@ class AppConfig:
         finally:
             db_session.close()
 
-    def get_usuario_service(self, db_session: Session) -> UsuarioService:
-        db_storage = DBStorageStrategy(db_session)
-        return UsuarioService(db_storage)
-    
-    def setup_routes(self):
-        @self.app.get("/")
-        def read_root():
-            return {"Hello": "World"}
-
-#config = AppConfig("postgresql+psycopg2://user:password@localhost/dbname")
+        
+    def create_database(self):
+        Base.metadata.create_all(bind=self.engine)
