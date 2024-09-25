@@ -1,14 +1,15 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from ..models.usuario import UsuarioDB 
+from ..models.usuario import Usuario, UsuarioDB 
 from .storageStrategy import StorageStrategy
 
 class DBStorageStrategy(StorageStrategy):
     def __init__(self, db_session: Session):
         self.db_session = db_session
 
-    def save(self, item: UsuarioDB) -> None:
-        self.db_session.add(item)
+    def save(self, item: Usuario) -> None:
+        usuario_db = UsuarioDB(item)
+        self.db_session.add(usuario_db)
         self.db_session.commit()
 
     def load(self, item_id: int) -> Optional[UsuarioDB]:

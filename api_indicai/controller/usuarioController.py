@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from typing import List, Optional
 from api_indicai.models.usuario import Usuario
 from api_indicai.services.usuarioService import UsuarioService
-from api_indicai.db.dependecies import get_usuario_service
+from api_indicai.db.dependencies import get_usuario_service
 
 class UsuarioController:
     router = APIRouter()

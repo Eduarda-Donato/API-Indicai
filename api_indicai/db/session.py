@@ -20,6 +20,6 @@ class AppConfig:
         finally:
             db_session.close()
 
-        
     def create_database(self):
         Base.metadata.create_all(bind=self.engine)
+
