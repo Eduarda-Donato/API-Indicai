@@ -1,5 +1,5 @@
-from .validarLogin import ValidarLogin
-from .validarSenha import ValidarSenha
+from validarLogin import ValidarLogin
+from validarSenha import ValidarSenha
 from models.condomino import Condomino
 from models.prestador import Prestador
 

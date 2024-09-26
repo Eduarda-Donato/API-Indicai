@@ -1,5 +1,7 @@
-from .condomino import Condomino
-from enums.servico import Servico
+from .usuario import Usuario
+from ..enums.servico import Servico
+from pydantic import Field
 
-class Prestador(Condomino):
-    tipoServico: Servico
+class Prestador(Usuario):
+    tiposervico: Servico = Field(default=None)
+    notamedia: float

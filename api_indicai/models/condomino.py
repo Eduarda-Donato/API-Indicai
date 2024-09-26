@@ -1,14 +1,8 @@
 from .usuario import Usuario
-from utils.criptografarSenha import CriptografarSenha
+from pydantic import Field
 
 class Condomino(Usuario):
-    login: str
-    senha: str
-    bloco: str
-    ap: str
-
-    def set_senha(self, senha: str):
-        self.senha = CriptografarSenha.hash_senha(senha)
-
-    def verificar_senha(self, senha: str) -> bool:
-        return CriptografarSenha.verificar_senha(senha, self.senha)
+    login: str = Field(default=None)
+    senha: str = Field(default=None)
+    bloco: str = Field(default=None)
+    ap: str = Field(default=None)
