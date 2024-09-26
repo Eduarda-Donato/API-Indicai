@@ -1,7 +1,6 @@
 from validarLogin import ValidarLogin
 from validarSenha import ValidarSenha
 from models.condomino import Condomino
-from models.prestador import Prestador
 
 class ValidarUsuario:
 
@@ -9,7 +8,7 @@ class ValidarUsuario:
     def validar(usuario):
         erros = []
 
-        if isinstance(usuario, Condomino) or isinstance(usuario, Prestador):
+        if isinstance(usuario, Condomino):
             if not ValidarLogin.validar(usuario.login):
                 erros.append("Login inválido!")
             
