@@ -1,46 +1,68 @@
-from typing import Union, List, Type
-from models.condomino import Condomino
-from models.prestador import Prestador
-from enums.servico import Servico
-from services.usuarioManager import UsuarioManager
+from fastapi import APIRouter, Depends, HTTPException
+from typing import List, Union
+from models.usuario import Usuario
+from api_indicai.models.prestador import Prestador
+from api_indicai.models.condomino import Condomino
+from services.usuarioService import UsuarioService
 from utils.validarUsuario import ValidarUsuario
 from utils.criptografarSenha import CriptografarSenha
 
 class UsuarioController:
-    def __init__(self, manager: UsuarioManager):
-        self.manager = manager
+    def __init__(self, usuario_service: UsuarioService):
+        self.router = APIRouter()
+        self.usuario_service = usuario_service
+        self.setup_routes()
 
-    def create_usuario(self, usuario: Union[Condomino, Prestador]) -> bool:
-        valido, erros = ValidarUsuario.validar(usuario)
-        if not valido:
-            for erro in erros:
-                print(erro)
-            return False
+    def setup_routes(self):
+        @self.router.post("/", response_model=Union[Condomino, Prestador])
+        def create_usuario(usuario: Union[Condomino, Prestador]):
+            # Valida o usuário antes de criar
+            valido, erros = ValidarUsuario.validar(usuario)
+            if not valido:
+                raise HTTPException(status_code=400, detail=erros)
 
-        usuario.senha = CriptografarSenha.hash_senha(usuario.senha)
-        self.manager.create_usuario(usuario)
-        return True
+            # Criptografa a senha se o tipo de usuário for Condomino
+            if usuario.tipousuario == "condomino":
+                usuario.senha = CriptografarSenha.hash_senha(usuario.senha)
 
-    def get_usuario_por_id(self, id: int) -> Union[Condomino, Prestador, None]:
-        return self.manager.get_usuario_por_id(id)
+            return self.usuario_service.create_usuario(usuario)
 
-    def get_usuario_por_tipo(self, tipo: Type[Union[Condomino, Prestador]]) -> List[Union[Condomino, Prestador]]:
-        return self.manager.get_usuario_por_tipo(tipo)
+        @self.router.get("/{usuario_id}", response_model=Union[Condomino, Prestador])
+        def get_usuario(usuario_id: int):
+            usuario = self.usuario_service.get_usuario_por_id(usuario_id)
+            if usuario is None:
+                raise HTTPException(status_code=404, detail="Usuário não encontrado")
+            return usuario
 
-    def get_prestador_por_servico(self, servico: Servico) -> List[Prestador]:
-        return self.manager.get_prestador_por_servico(servico)
+        @self.router.get("/", response_model=List[Union[Condomino, Prestador]])
+        def read_usuarios():
+            return self.usuario_service.get_usuarios()
 
-    def update_usuario(self, id: int, usuario_atualizado: Union[Condomino, Prestador]) -> bool:
-        valido, erros = ValidarUsuario.validar(usuario_atualizado)
-        if not valido:
-            for erro in erros:
-                print (erro)
-            return False
-        
-        if usuario_atualizado.senha:
-            usuario_atualizado.senha = CriptografarSenha.hash_senha(usuario_atualizado.senha)  # Corrigido para usar hash_senha
+        @self.router.put("/{usuario_id}", response_model=Union[Condomino, Prestador])
+        def update_usuario(usuario_id: int, usuario: Usuario):
+            # Valida o usuário antes de atualizar
+            valido, erros = ValidarUsuario.validar(usuario)
+            if not valido:
+                raise HTTPException(status_code=400, detail=erros)
 
-        return self.manager.update_usuario(id, usuario_atualizado)
-        
-    def delete_usuario_por_id(self, id: int) -> bool:
-        return self.manager.delete_usuario_id(id)
+            # Criptografa a senha se o tipo de usuário for Condomino
+            if usuario.tipousuario == "condomino" and usuario.senha:
+                usuario.senha = CriptografarSenha.hash_senha(usuario.senha)
+
+            updated_usuario = self.usuario_service.update_usuario(usuario_id, usuario)
+            if updated_usuario is None:
+                raise HTTPException(status_code=404, detail="Usuário não encontrado")
+            return updated_usuario
+
+        @self.router.delete("/{usuario_id}", response_model=dict)
+        def delete_usuario(usuario_id: int):
+            if self.usuario_service.delete_usuario_id(usuario_id):
+                return {"status": "Usuário deletado com sucesso"}
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+        @self.router.post("/login", response_model=dict)
+        def login(login: str, senha: str):
+            usuario = self.usuario_service.get_usuario_por_login(login)
+            if usuario is None or not CriptografarSenha.verificar_senha(senha, usuario.senha):
+                raise HTTPException(status_code=401, detail="Login ou senha inválidos.")
+            return {"message": "Login bem-sucedido!", "usuario": usuario}

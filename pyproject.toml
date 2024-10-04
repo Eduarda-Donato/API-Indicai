@@ -8,6 +8,12 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi = "^0.112.0"
+sqlalchemy = "^2.0.34"
+uvicorn = "^0.30.6"
+psycopg2 = "^2.9.9"
+alembic = "^1.13.2"
+bcrypt = "^4.2.0"
+password-strength = "^0.0.3.post2"
 
 
 [tool.poetry.group.dev.dependencies]
