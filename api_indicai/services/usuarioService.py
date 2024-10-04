@@ -1,13 +1,14 @@
 from typing import List, Optional
 from api_indicai.repositories.usuarioRepositoryInDB import UsuarioRepository  # Ajuste o caminho conforme necessário
+from api_indicai.repositories.usuarioRepositoryInterface import UsuarioRepositoryInterface
 from models.usuario import Usuario
 from utils.criptografarSenha import CriptografarSenha
 from utils.validarUsuario import ValidarUsuario
 from api_indicai.db.singletonSession import AppConfig
 
 class UsuarioService:
-    def __init__(self, db_session: AppConfig):
-        self.usuario_repository = UsuarioRepository(db_session)
+    def __init__(self,usuario_repository: UsuarioRepositoryInterface):
+        self.usuario_repository = usuario_repository
 
     def create_usuario(self, usuario: Usuario) -> Usuario:
         # Validação do usuário
