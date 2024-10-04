@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from models.avaliacao import AvaliacaoDB  # Ajuste o caminho conforme necessário
+from ..models.avaliacaodb import AvaliacaoDB  # Ajuste o caminho conforme necessário
 
 
 class AvaliacaoRepository:

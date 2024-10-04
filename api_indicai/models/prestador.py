@@ -1,5 +1,5 @@
-from .usuario import Usuario
-from ..enums.servico import Servico
+from api_indicai.models.usuario import Usuario
+from api_indicai.enums.servico import Servico
 from pydantic import Field
 
 class Prestador(Usuario):

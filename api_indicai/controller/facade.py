@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from avaliacaoController import AvaliacaoController
-from usuarioController import UsuarioController
-from db.session import Session
-from services.usuarioService import UsuarioService
+from api_indicai.controller.avaliacaoController import AvaliacaoController
+from api_indicai.controller.usuarioController import UsuarioController
+from api_indicai.db.singletonSession import Session
+from api_indicai.services.usuarioService import UsuarioService
 
 class Facade:
     _instance = None

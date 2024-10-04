@@ -1,6 +1,6 @@
 from typing import List, Optional
-from models.avaliacao import AvaliacaoDB
-from repositories.avaliacaoRepository import AvaliacaoRepository
+from api_indicai.models.avaliacaodb import AvaliacaoDB
+from api_indicai.repositories.avaliacaoRepository import AvaliacaoRepository  # Ajuste o caminho conforme necessário
 
 class AvaliacaoService:
     def __init__(self, avaliacao_repository: AvaliacaoRepository):

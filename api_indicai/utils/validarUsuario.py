@@ -1,6 +1,6 @@
-from validarLogin import ValidarLogin
-from validarSenha import ValidarSenha
-from models.condomino import Condomino
+from api_indicai.utils.validarLogin import ValidarLogin
+from api_indicai.utils.validarSenha import ValidarSenha
+from api_indicai.models.condomino import Condomino
 
 class ValidarUsuario:
 
