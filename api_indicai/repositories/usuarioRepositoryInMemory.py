@@ -33,3 +33,9 @@ class UsuarioRepositoryInMemory(UsuarioRepositoryInterface):
                 setattr(usuario, key, value)
             return usuario
         return None
+
+    def contar_usuarios(self) -> int:
+        """
+        Retorna o número total de usuários armazenados na memória.
+        """
+        return len(self.usuarios)

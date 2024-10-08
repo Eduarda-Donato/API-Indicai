@@ -55,3 +55,10 @@ class AvaliacaoRepository:
             self.db_session.commit()
             return avaliacao
         return None
+
+    
+    def contar_avaliacoes(self) -> int:
+        """
+        Retorna o número total de avaliações no banco de dados.
+        """
+        return self.db_session.query(AvaliacaoDB).count()
