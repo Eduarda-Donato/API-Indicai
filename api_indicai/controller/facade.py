@@ -1,26 +1,25 @@
-from fastapi import APIRouter
-from api_indicai.controller.avaliacaoController import AvaliacaoController
-from api_indicai.controller.usuarioController import UsuarioController
-from api_indicai.db.singletonSession import Session
-from api_indicai.repositories.usuarioRepositoryFactory import UsuarioRepositoryFactory
-from api_indicai.services.usuarioService import UsuarioService
+from services.usuarioService import UsuarioService
+from commands.commandInvoker import CommandInvoker
+from api_indicai.models.usuario import Usuario
+from commands.usuarioCommands import (
+    CriarUsuarioCommand,
+    AtualizarUsuarioCommand,
+    DeletarUsuarioCommand
+)
 
 class Facade:
-    _instance = None
+    def __init__(self, db_session):
+        self.usuario_service = UsuarioService(db_session)
+        self.command_invoker = CommandInvoker()
 
-    def __new__(cls, db_session: Session):
-        if cls._instance is None:
-            cls._instance = super(Facade, cls).__new__(cls)
-            cls._instance.router = APIRouter()
-            usuario_repository = UsuarioRepositoryFactory.criar_repository("BD",db_session) #escolhe o metodo de armazenamento
-            cls._instance.usuario_controller = UsuarioController(UsuarioService(usuario_repository))  # Injeção de dependência
-            cls._instance.avaliacao_controller = AvaliacaoController(db_session)
-            cls._instance.setup_routes()
-        return cls._instance
+    def criar_usuario(self, usuario: Usuario):
+        command = CriarUsuarioCommand(self.usuario_service, usuario)
+        return self.command_invoker.execute_command(command)
 
-    def setup_routes(self):
-        # Registra as rotas do controller de avaliação
-        self.router.include_router(self.avaliacao_controller.router, prefix="/avaliacoes", tags=["Avaliações"])
-        
-        # Registra as rotas do controller de usuário
-        self.router.include_router(self.usuario_controller.router, prefix="/usuarios", tags=["Usuários"])
+    def atualizar_usuario(self, usuario_id: int, usuario: Usuario):
+        command = AtualizarUsuarioCommand(self.usuario_service, usuario_id, usuario)
+        return self.command_invoker.execute_command(command)
+
+    def deletar_usuario(self, usuario_id: int):
+        command = DeletarUsuarioCommand(self.usuario_service, usuario_id)
+        return self.command_invoker.execute_command(command)
